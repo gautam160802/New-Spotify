@@ -1,7 +1,7 @@
 import { createContext, useEffect, useRef, useState } from "react";
 import { songsData } from "../assets/assets";
 
-// Create the context
+// Create Context
 export const PlayerContext = createContext();
 
 // Context Provider Component
@@ -28,29 +28,29 @@ const PlayerContextProvider = ({ children }) => {
     setPlayStatus(false);
   };
 
-  const playWithId = async (id) => {
-    await setTrack(songsData[id]);
-    await audioRef.current.play();
-    setPlayStatus(true);
+  const playWithId = (id) => {
+    setTrack(songsData[id]);
   };
 
-  const previous = async () => {
-    if (track.id > 0) {
-      await setTrack(songsData[track.id - 1]);
-      await audioRef.current.play();
-      setPlayStatus(true);
+  const previous = () => {
+    if (track && track.id > 0) {
+      setTrack(songsData[track.id - 1]);
     }
   };
 
-  const next = async () => {
-    if (track.id < songsData.length - 1) {
-      await setTrack(songsData[track.id + 1]);
-      await audioRef.current.play();
-      setPlayStatus(true);
+  const next = () => {
+    if (track && track.id < songsData.length - 1) {
+      setTrack(songsData[track.id + 1]);
     }
   };
 
-  const seekSong = async (e) => {
+  useEffect(() => {
+    if (playStatus) {
+      audioRef.current.play();
+    }
+  }, [track]); // Auto-play when track changes
+
+  const seekSong = (e) => {
     audioRef.current.currentTime =
       (e.nativeEvent.offsetX / seekBg.current.offsetWidth) *
       audioRef.current.duration;
